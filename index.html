@@ -1,130 +1,131 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ONEPLAYER TV - Prueba HLS</title>
 
-    <title>OnePlayer TV</title>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
-    <!-- HLS.js -->
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<style>
+*{box-sizing:border-box}
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+body{
+    margin:0;
+    background:#070a10;
+    color:#fff;
+    font-family:Arial,sans-serif;
+}
 
-        body {
-            background: #080b12;
-            color: white;
-            font-family: Arial, sans-serif;
-        }
+header{
+    padding:22px 30px;
+    background:#0d111a;
+    border-bottom:1px solid #202838;
+}
 
-        header {
-            background: #0d111a;
-            padding: 20px 30px;
-            border-bottom: 1px solid #202838;
-        }
+header h1{
+    margin:0;
+    font-size:27px;
+}
 
-        header h1 {
-            font-size: 26px;
-        }
+header span{
+    color:#00d9ff;
+}
 
-        header h1 span {
-            color: #00d9ff;
-        }
+main{
+    max-width:1150px;
+    margin:auto;
+    padding:25px;
+}
 
-        main {
-            max-width: 1200px;
-            margin: auto;
-            padding: 25px;
-        }
+.player{
+    background:#000;
+    border-radius:15px;
+    overflow:hidden;
+    box-shadow:0 15px 50px rgba(0,0,0,.4);
+}
 
-        /* REPRODUCTOR */
+video{
+    display:block;
+    width:100%;
+    aspect-ratio:16/9;
+    background:#000;
+}
 
-        .player {
-            background: #000;
-            border-radius: 15px;
-            overflow: hidden;
-            margin-bottom: 35px;
-        }
+.info{
+    padding:15px 18px;
+    background:#111722;
+}
 
-        video {
-            width: 100%;
-            height: auto;
-            aspect-ratio: 16 / 9;
-            display: block;
-            background: #000;
-        }
+.info strong{
+    color:#00d9ff;
+}
 
-        .playing {
-            padding: 15px 20px;
-            background: #111722;
-            font-size: 18px;
-        }
+.status{
+    margin-top:8px;
+    padding:10px;
+    background:#080b12;
+    border-radius:8px;
+    color:#aab4c5;
+    font-family:monospace;
+    font-size:13px;
+    white-space:pre-wrap;
+    word-break:break-word;
+}
 
-        .playing span {
-            color: #00d9ff;
-            font-weight: bold;
-        }
+.status.ok{
+    color:#55e6a5;
+}
 
-        /* CATEGORÍAS */
+.status.error{
+    color:#ff7373;
+}
 
-        .category {
-            margin-bottom: 35px;
-        }
+h2{
+    margin-top:30px;
+}
 
-        .category h2 {
-            margin-bottom: 15px;
-            font-size: 22px;
-        }
+.channels{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+    gap:14px;
+}
 
-        /* CANALES */
+.channel{
+    background:#111722;
+    border:1px solid #202b3d;
+    border-radius:12px;
+    padding:20px;
+    cursor:pointer;
+    transition:.2s;
+}
 
-        .channels {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 15px;
-        }
+.channel:hover{
+    border-color:#00d9ff;
+    transform:translateY(-2px);
+}
 
-        .channel {
-            background: #111722;
-            border: 1px solid #202a3a;
-            border-radius: 12px;
-            padding: 20px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+.channel p{
+    margin:8px 0 0;
+    color:#8d98aa;
+    font-size:14px;
+}
 
-        .channel:hover {
-            transform: translateY(-3px);
-            border-color: #00d9ff;
-            background: #151d29;
-        }
+.url{
+    margin-top:15px;
+    padding:12px;
+    background:#05070b;
+    border-radius:8px;
+    color:#687487;
+    font-size:11px;
+    word-break:break-all;
+}
 
-        .channel h3 {
-            margin-bottom: 8px;
-        }
-
-        .channel p {
-            color: #8994a6;
-            font-size: 14px;
-        }
-
-        @media (max-width: 600px) {
-
-            main {
-                padding: 15px;
-            }
-
-            .channels {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-        }
-    </style>
+@media(max-width:600px){
+    main{padding:15px}
+    .channels{grid-template-columns:repeat(2,1fr)}
+}
+</style>
 </head>
 
 <body>
@@ -135,203 +136,346 @@
 
 <main>
 
-    <!-- REPRODUCTOR -->
-
     <div class="player">
 
-        <video id="video" controls></video>
+        <video id="video" controls playsinline></video>
 
-        <div class="playing">
-            Reproduciendo:
-            <span id="currentChannel">
-                Seleccioná un canal
-            </span>
+        <div class="info">
+            <div>
+                Reproduciendo:
+                <strong id="channelName">Ningún canal</strong>
+            </div>
+
+            <div id="status" class="status">
+Esperando un canal...
+            </div>
+
+            <div id="url" class="url">
+URL: -
+            </div>
         </div>
 
     </div>
 
 
-    <!-- ARGENTINA -->
+    <h2>Canales de prueba</h2>
 
-    <section class="category">
+    <div class="channels">
 
-        <h2>🇦🇷 Argentina</h2>
-
-        <div class="channels">
-
-            <div class="channel"
-                 onclick="playChannel(
-                 'Telefe',
-                 'https://cdn.cvattv.com.ar/live/c6eds/TelefeHD/sa_hls_full_e_95AEFABF606F67368D62A486/TelefeHD.m3u8'
-                 )">
-
-                <h3>Telefe</h3>
-                <p>Canal argentino</p>
-
-            </div>
-
-
-            <div class="channel"
-                 onclick="playChannel(
-                 'América TV',
-                 'https://cdn.cvattv.com.ar/live/c3eds/AmericaTV/sa_hls_full_e_95AEFABF606F67368D62A486/AmericaTV.m3u8'
-                 )">
-
-                <h3>América TV</h3>
-                <p>Canal argentino</p>
-
-            </div>
-
+        <div class="channel" onclick="playChannel(
+            '24/7 Canal de Noticias',
+            'https://59c5c86e10038.streamlock.net/6605140/6605140/playlist.m3u8'
+        )">
+            <strong>24/7 Canal de Noticias</strong>
+            <p>Noticias</p>
         </div>
 
-    </section>
 
-
-    <!-- DEPORTES -->
-
-    <section class="category">
-
-        <h2>⚽ Deportes</h2>
-
-        <div class="channels">
-
-            <div class="channel"
-                 onclick="playChannel(
-                 'TyC Sports',
-                 'https://cdn.cvattv.com.ar/live/c7eds/TyCSport/sa_hls_full_e_95AEFABF606F67368D62A486/TyCSport.m3u8'
-                 )">
-
-                <h3>TyC Sports</h3>
-                <p>Deportes</p>
-
-            </div>
-
-
-            <div class="channel"
-                 onclick="playChannel(
-                 'ESPN',
-                 'https://cdn.cvattv.com.ar/live/c3eds/ESPNHD/sa_hls_full_e_95AEFABF606F67368D62A486/ESPNHD.m3u8'
-                 )">
-
-                <h3>ESPN</h3>
-                <p>Deportes</p>
-
-            </div>
-
-
-            <div class="channel"
-                 onclick="playChannel(
-                 'Fox Sports',
-                 'https://cdn.cvattv.com.ar/live/c3eds/FoxSports/sa_hls_full_e_95AEFABF606F67368D62A486/FoxSports.m3u8'
-                 )">
-
-                <h3>Fox Sports</h3>
-                <p>Deportes</p>
-
-            </div>
-
+        <div class="channel" onclick="playChannel(
+            'Acequia TV',
+            'https://ythls.onrender.com/channel/UCrYFBjFOP_zlFzsif9XDhgw.m3u8'
+        )">
+            <strong>Acequia TV</strong>
+            <p>Argentina</p>
         </div>
 
-    </section>
 
-
-    <!-- CINE -->
-
-    <section class="category">
-
-        <h2>🎬 Cine y Series</h2>
-
-        <div class="channels">
-
-            <div class="channel"
-                 onclick="playChannel(
-                 'HBO',
-                 'https://cdn.cvattv.com.ar/live/c3eds/HBOHD/sa_hls_full_e_95AEFABF606F67368D62A486/HBOHD.m3u8'
-                 )">
-
-                <h3>HBO</h3>
-                <p>Cine y series</p>
-
-            </div>
-
-
-            <div class="channel"
-                 onclick="playChannel(
-                 'Cinemax',
-                 'https://cdn.cvattv.com.ar/live/c6eds/Cinemax/sa_hls_full_e_95AEFABF606F67368D62A486/Cinemax.m3u8'
-                 )">
-
-                <h3>Cinemax</h3>
-                <p>Cine y series</p>
-
-            </div>
-
+        <div class="channel" onclick="playChannel(
+            'Agrotendencia TV',
+            'https://5fc584f3f19c8.streamlock.net/agrotendencia/videoagrotendencia_hls1/playlist.m3u8'
+        )">
+            <strong>Agrotendencia TV</strong>
+            <p>Documentales</p>
         </div>
 
-    </section>
+
+        <div class="channel" onclick="playChannel(
+            'Aire de Santa Fe',
+            'https://sc1.stweb.tv/airedigital/live/playlist.m3u8'
+        )">
+            <strong>Aire de Santa Fe</strong>
+            <p>Argentina</p>
+        </div>
+
+
+        <div class="channel" onclick="playChannel(
+            'América TV',
+            'https://raw.githubusercontent.com/MachineSystems/archived_m3u8/main/america_hls.m3u8'
+        )">
+            <strong>América TV</strong>
+            <p>Argentina</p>
+        </div>
+
+    </div>
 
 </main>
 
 
 <script>
 
-    const video = document.getElementById("video");
-    const currentChannel = document.getElementById("currentChannel");
+const video = document.getElementById("video");
+const channelName = document.getElementById("channelName");
+const statusBox = document.getElementById("status");
+const urlBox = document.getElementById("url");
 
-    let hls = null;
-
-
-    function playChannel(name, url) {
-
-        currentChannel.textContent = name;
+let hls = null;
 
 
-        // Si ya había un reproductor HLS
-        if (hls) {
-            hls.destroy();
-            hls = null;
-        }
+function status(message, type="") {
+
+    statusBox.className = "status " + type;
+    statusBox.textContent = message;
+
+}
 
 
-        // Chrome / Edge / Firefox
-        if (Hls.isSupported()) {
+function playChannel(name, url) {
 
-            hls = new Hls();
+    channelName.textContent = name;
 
-            hls.loadSource(url);
+    urlBox.textContent = "URL: " + url;
 
-            hls.attachMedia(video);
+    status(
+        "Iniciando reproducción...\n" +
+        "Canal: " + name
+    );
 
-            hls.on(Hls.Events.MANIFEST_PARSED, function () {
+    if (hls) {
 
-                video.play();
+        hls.destroy();
+        hls = null;
+
+    }
+
+    video.pause();
+    video.removeAttribute("src");
+    video.load();
+
+
+    // HLS.js
+
+    if (Hls.isSupported()) {
+
+        hls = new Hls({
+
+            enableWorker: true,
+
+            lowLatencyMode: false,
+
+            debug: false
+
+        });
+
+
+        hls.on(Hls.Events.MEDIA_ATTACHED, function() {
+
+            status(
+                "MEDIA ATTACHED\n" +
+                "El reproductor está conectado al video."
+            );
+
+        });
+
+
+        hls.on(Hls.Events.MANIFEST_LOADING, function(event, data) {
+
+            status(
+                "MANIFEST LOADING\n\n" +
+                "Intentando descargar:\n" +
+                data.url
+            );
+
+        });
+
+
+        hls.on(Hls.Events.MANIFEST_LOADED, function(event, data) {
+
+            status(
+                "MANIFEST LOADED\n\n" +
+                "URL:\n" + data.url
+            );
+
+        });
+
+
+        hls.on(Hls.Events.MANIFEST_PARSED, function(event, data) {
+
+            status(
+                "MANIFEST PARSED ✓\n\n" +
+                "Calidades encontradas: " +
+                data.levels.length +
+                "\n\nIntentando reproducir...",
+                "ok"
+            );
+
+            video.play().catch(function(error) {
+
+                status(
+                    "MANIFEST OK, pero el navegador no inició automáticamente.\n\n" +
+                    "Error: " + error.message +
+                    "\n\nPresioná ▶ en el reproductor.",
+                    "error"
+                );
 
             });
 
-        }
+        });
 
-        // Safari / dispositivos con HLS nativo
-        else if (
-            video.canPlayType(
-                "application/vnd.apple.mpegurl"
-            )
-        ) {
 
-            video.src = url;
+        hls.on(Hls.Events.ERROR, function(event, data) {
 
-            video.play();
+            console.error("HLS ERROR:", data);
 
-        }
+            let mensaje =
+                "❌ ERROR HLS\n\n" +
 
-        else {
+                "Tipo: " + data.type + "\n" +
 
-            alert(
-                "Tu navegador no soporta reproducción HLS."
-            );
+                "Detalle: " + data.details + "\n" +
 
-        }
+                "Código: " +
+                (data.response && data.response.code
+                    ? data.response.code
+                    : "N/A") +
+                "\n\n" +
+
+                "Fatal: " + data.fatal;
+
+
+            if (data.response) {
+
+                mensaje +=
+                    "\n\nResponse URL:\n" +
+                    (data.response.url || "N/A");
+
+            }
+
+
+            if (data.networkDetails) {
+
+                mensaje +=
+                    "\n\nNetwork details:\n" +
+                    String(data.networkDetails);
+
+            }
+
+
+            status(mensaje, "error");
+
+
+            // Intentos automáticos solamente para errores recuperables
+
+            if (data.fatal) {
+
+                if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
+
+                    status(
+                        mensaje +
+                        "\n\nIntentando recuperar el error de red...",
+                        "error"
+                    );
+
+                    setTimeout(function() {
+
+                        if (hls) {
+                            hls.startLoad();
+                        }
+
+                    }, 1500);
+
+                }
+
+                else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
+
+                    status(
+                        mensaje +
+                        "\n\nIntentando recuperar el error multimedia...",
+                        "error"
+                    );
+
+                    hls.recoverMediaError();
+
+                }
+
+            }
+
+        });
+
+
+        hls.loadSource(url);
+
+        hls.attachMedia(video);
 
     }
+
+
+    // HLS nativo: Safari / algunos dispositivos
+
+    else if (
+        video.canPlayType(
+            "application/vnd.apple.mpegurl"
+        )
+    ) {
+
+        status(
+            "HLS NATIVO\n\n" +
+            "El navegador soporta HLS directamente.\n" +
+            "Cargando stream..."
+        );
+
+
+        video.src = url;
+
+
+        video.addEventListener("loadedmetadata", function() {
+
+            status(
+                "STREAM CARGADO ✓\n\n" +
+                "Metadatos recibidos.\n" +
+                "Intentando reproducir...",
+                "ok"
+            );
+
+            video.play().catch(function(error) {
+
+                status(
+                    "El stream cargó, pero no comenzó automáticamente.\n\n" +
+                    error.message,
+                    "error"
+                );
+
+            });
+
+        }, {once:true});
+
+
+        video.addEventListener("error", function() {
+
+            status(
+                "❌ ERROR DEL VIDEO\n\n" +
+                "Código: " +
+                (video.error ? video.error.code : "N/A") +
+                "\n\n" +
+                "El navegador no pudo reproducir este stream.",
+                "error"
+            );
+
+        }, {once:true});
+
+    }
+
+
+    else {
+
+        status(
+            "❌ HLS NO COMPATIBLE\n\n" +
+            "Este navegador no puede reproducir HLS.",
+            "error"
+        );
+
+    }
+
+}
 
 </script>
 
