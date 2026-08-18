@@ -1,37 +1,339 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="icon" href="img/flowers.png" type="image/x-icon">
-    <title>Flowers</title>
+
+    <title>OnePlayer TV</title>
+
+    <!-- HLS.js -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #080b12;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        header {
+            background: #0d111a;
+            padding: 20px 30px;
+            border-bottom: 1px solid #202838;
+        }
+
+        header h1 {
+            font-size: 26px;
+        }
+
+        header h1 span {
+            color: #00d9ff;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: auto;
+            padding: 25px;
+        }
+
+        /* REPRODUCTOR */
+
+        .player {
+            background: #000;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 35px;
+        }
+
+        video {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16 / 9;
+            display: block;
+            background: #000;
+        }
+
+        .playing {
+            padding: 15px 20px;
+            background: #111722;
+            font-size: 18px;
+        }
+
+        .playing span {
+            color: #00d9ff;
+            font-weight: bold;
+        }
+
+        /* CATEGORÍAS */
+
+        .category {
+            margin-bottom: 35px;
+        }
+
+        .category h2 {
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        /* CANALES */
+
+        .channels {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .channel {
+            background: #111722;
+            border: 1px solid #202a3a;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .channel:hover {
+            transform: translateY(-3px);
+            border-color: #00d9ff;
+            background: #151d29;
+        }
+
+        .channel h3 {
+            margin-bottom: 8px;
+        }
+
+        .channel p {
+            color: #8994a6;
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+
+            main {
+                padding: 15px;
+            }
+
+            .channels {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+    </style>
 </head>
 
 <body>
-    <div class="greetings">
-        <span>H</span>
-        <span>o</span>
-        <span>l</span>
-        <span>a</span>
-        <span>_</span>
 
-        <span>M</span>
-        <span>a</span>
-        <span>r</span>
-        <span>i</span>
+<header>
+    <h1>ONE<span>PLAYER</span> TV</h1>
+</header>
+
+<main>
+
+    <!-- REPRODUCTOR -->
+
+    <div class="player">
+
+        <video id="video" controls></video>
+
+        <div class="playing">
+            Reproduciendo:
+            <span id="currentChannel">
+                Seleccioná un canal
+            </span>
+        </div>
+
     </div>
-    <div class="description">
-        <span>&#128147 ESTE DETALLE ES PARA TI &#128147</span>
-    </div>
-    <div class="button">
-        <button class="botones">
-            <a href="flower.html" style="color: #fff;">&#128522 ENTRA AQUÍ &#128522</a>
-        </button>
-    </div>
+
+
+    <!-- ARGENTINA -->
+
+    <section class="category">
+
+        <h2>🇦🇷 Argentina</h2>
+
+        <div class="channels">
+
+            <div class="channel"
+                 onclick="playChannel(
+                 'Telefe',
+                 'https://cdn.cvattv.com.ar/live/c6eds/TelefeHD/sa_hls_full_e_95AEFABF606F67368D62A486/TelefeHD.m3u8'
+                 )">
+
+                <h3>Telefe</h3>
+                <p>Canal argentino</p>
+
+            </div>
+
+
+            <div class="channel"
+                 onclick="playChannel(
+                 'América TV',
+                 'https://cdn.cvattv.com.ar/live/c3eds/AmericaTV/sa_hls_full_e_95AEFABF606F67368D62A486/AmericaTV.m3u8'
+                 )">
+
+                <h3>América TV</h3>
+                <p>Canal argentino</p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- DEPORTES -->
+
+    <section class="category">
+
+        <h2>⚽ Deportes</h2>
+
+        <div class="channels">
+
+            <div class="channel"
+                 onclick="playChannel(
+                 'TyC Sports',
+                 'https://cdn.cvattv.com.ar/live/c7eds/TyCSport/sa_hls_full_e_95AEFABF606F67368D62A486/TyCSport.m3u8'
+                 )">
+
+                <h3>TyC Sports</h3>
+                <p>Deportes</p>
+
+            </div>
+
+
+            <div class="channel"
+                 onclick="playChannel(
+                 'ESPN',
+                 'https://cdn.cvattv.com.ar/live/c3eds/ESPNHD/sa_hls_full_e_95AEFABF606F67368D62A486/ESPNHD.m3u8'
+                 )">
+
+                <h3>ESPN</h3>
+                <p>Deportes</p>
+
+            </div>
+
+
+            <div class="channel"
+                 onclick="playChannel(
+                 'Fox Sports',
+                 'https://cdn.cvattv.com.ar/live/c3eds/FoxSports/sa_hls_full_e_95AEFABF606F67368D62A486/FoxSports.m3u8'
+                 )">
+
+                <h3>Fox Sports</h3>
+                <p>Deportes</p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- CINE -->
+
+    <section class="category">
+
+        <h2>🎬 Cine y Series</h2>
+
+        <div class="channels">
+
+            <div class="channel"
+                 onclick="playChannel(
+                 'HBO',
+                 'https://cdn.cvattv.com.ar/live/c3eds/HBOHD/sa_hls_full_e_95AEFABF606F67368D62A486/HBOHD.m3u8'
+                 )">
+
+                <h3>HBO</h3>
+                <p>Cine y series</p>
+
+            </div>
+
+
+            <div class="channel"
+                 onclick="playChannel(
+                 'Cinemax',
+                 'https://cdn.cvattv.com.ar/live/c6eds/Cinemax/sa_hls_full_e_95AEFABF606F67368D62A486/Cinemax.m3u8'
+                 )">
+
+                <h3>Cinemax</h3>
+                <p>Cine y series</p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script>
+
+    const video = document.getElementById("video");
+    const currentChannel = document.getElementById("currentChannel");
+
+    let hls = null;
+
+
+    function playChannel(name, url) {
+
+        currentChannel.textContent = name;
+
+
+        // Si ya había un reproductor HLS
+        if (hls) {
+            hls.destroy();
+            hls = null;
+        }
+
+
+        // Chrome / Edge / Firefox
+        if (Hls.isSupported()) {
+
+            hls = new Hls();
+
+            hls.loadSource(url);
+
+            hls.attachMedia(video);
+
+            hls.on(Hls.Events.MANIFEST_PARSED, function () {
+
+                video.play();
+
+            });
+
+        }
+
+        // Safari / dispositivos con HLS nativo
+        else if (
+            video.canPlayType(
+                "application/vnd.apple.mpegurl"
+            )
+        ) {
+
+            video.src = url;
+
+            video.play();
+
+        }
+
+        else {
+
+            alert(
+                "Tu navegador no soporta reproducción HLS."
+            );
+
+        }
+
+    }
+
+</script>
 
 </body>
-
 </html>
